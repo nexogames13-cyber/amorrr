@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cartas de amor ♥️</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: url("fundo.jpg") no-repeat center center fixed;
+      background-size: cover;
+      color: #4a1f1f;
+      text-align: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin-top: 40px;
+      font-size: 36px;
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.6);
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 12px;
+    }
+
+    p {
+      max-width: 600px;
+      margin: 20px auto;
+      font-size: 17px;
+      line-height: 1.6;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 12px;
+    }
+
+    .galeria {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 50px;
+      padding: 30px;
+      max-width: 650px;
+      margin: auto;
+    }
+
+    .galeria img {
+      width: 100%;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .galeria img:hover {
+      transform: scale(1.05);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.85);
+      text-align: center;
+    }
+
+    .modal-img {
+      margin-top: 50px;
+      max-width: 95%;
+      max-height: 90%;
+      border-radius: 15px;
+      animation: zoomIn 0.4s ease;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .fechar {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 40px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .controles button {
+      font-size: 30px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      margin: 0 20px;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 28px; }
+      p { font-size: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Cartas de amor ♥️</h1>
+<p id="texto-digitando"></p>
+
+<div class="galeria">
+  <img src="screenshot20260426103526_edited_1777211057609.jpg" onclick="abrirModal(0)">
+  <img src="screenshot20260426104014_edited_1777211057741.jpg" onclick="abrirModal(1)">
+  <img src="IMG20260426WA00282_edited_1777246321346.jpg" onclick="abrirModal(3)">
+  <img src="IMG20260426WA00272_edited_1777246321314.jpg" onclick="abrirModal(4)">
+  <img src="IMG20260426WA00262_edited_1777246321223.jpg" onclick="abrirModal(5)">
+  <img src="IMG20260426WA00252_edited_1777246321380.jpg" onclick="abrirModal(6)">
+  <img src="IMG20260426WA00242_edited_1777246321404.jpg" onclick="abrirModal(7)">
+  <img src="img20260426wa00142.jpg" onclick="abrirModal(8)">
+  <img src="IMG20260426WA00183_edited_1777247346888.jpg" onclick="abrirModal(9)">
+  <img src="IMG20260426WA00152_edited_1777247346935.jpg" onclick="abrirModal(10)">
+</div>
+
+<div id="modal" class="modal">
+  <span class="fechar" onclick="fecharModal()">×</span>
+  <img id="imgGrande" class="modal-img">
+  <div class="controles">
+    <button onclick="mudarImagem(-1)">❮</button>
+    <button onclick="mudarImagem(1)">❯</button>
+  </div>
+</div>
+
+<audio id="musica"></audio>
+
+<script>
+  const imagens = [
+    "screenshot20260426103526_edited_1777211057609.jpg",
+    "screenshot20260426104014_edited_1777211057741.jpg",
+    "IMG20260426WA00282_edited_1777246321346.jpg",
+    "IMG20260426WA00272_edited_1777246321314.jpg",
+    "IMG20260426WA00262_edited_1777246321223.jpg",
+    "IMG20260426WA00252_edited_1777246321380.jpg",
+    "IMG20260426WA00242_edited_1777246321404.jpg",
+    "img20260426wa00142.jpg",
+    "IMG20260426WA00183_edited_1777247346888.jpg",
+    "IMG20260426WA00152_edited_1777247346935.jpg"
+  ];
+
+  const playlist = ["musica1.mp3", "musica2.mp3", "musica3.mp3"];
+
+  let indexAtual = 0;
+  let musicaIndex = 0;
+  let fadeInterval;
+  const musica = document.getElementById("musica");
+
+  function tocarMusica(i) {
+    musica.src = playlist[i];
+    musica.volume = 0;
+    musica.play();
+    let v = 0;
+    clearInterval(fadeInterval);
+    fadeInterval = setInterval(() => {
+      if (v < 0.6) { v += 0.05; musica.volume = v; }
+      else clearInterval(fadeInterval);
+    }, 100);
+  }
+
+  musica.addEventListener("ended", () => {
+    musicaIndex = (musicaIndex + 1) % playlist.length;
+    tocarMusica(musicaIndex);
+  });
+
+  function abrirModal(i) {
+    indexAtual = i;
+    document.getElementById("modal").style.display = "block";
+    document.getElementById("imgGrande").src = imagens[i];
+    tocarMusica(musicaIndex);
+  }
+
+  function fecharModal() {
+    document.getElementById("modal").style.display = "none";
+    musica.pause();
+    musica.currentTime = 0;
+  }
+
+  function mudarImagem(d) {
+    indexAtual = (indexAtual + d + imagens.length) % imagens.length;
+    document.getElementById("imgGrande").src = imagens[indexAtual];
+  }
+
+  const texto = "Esse cantinho foi feito especialmente pra você, Emilly... 🤍 Aqui está cada texto que carrega um pedaço do que eu sinto, e que faz seu coração se encher de felicidade 💗";
+  let i = 0;
+  function digitar() {
+    if (i < texto.length) {
+      document.getElementById("texto-digitando").innerHTML += texto.charAt(i++);
+      setTimeout(digitar, 40);
+    }
+  }
+  window.onload = digitar;
+</script>
+
+</body>
+</html>
